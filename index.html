@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do Pinto Feliz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #f7f7f7;
+            border: 1px solid #333;
+            position: relative;
+        }
+
+        .cactus {
+            width: 20px;
+            height: 50px;
+            background-color: red;
+            position: absolute;
+            bottom: 10px;
+            right: 0;
+            animation: moveCactus 2s infinite linear;
+        }
+
+        @keyframes moveCactus {
+            100% {
+                right: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="800" height="200"></canvas>
+
+<script>
+// Pegando o elemento canvas e o contexto
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Variáveis do jogo
+let dinoX = 50;
+let dinoY = canvas.height - 60;
+let dinoWidth = 50;
+let dinoHeight = 50;
+let isJumping = false;
+let jumpHeight = 0;
+let gravity = 0.8;
+let jumpPower = 12;
+
+// Imagem do personagem (pinto feliz)
+const pintoImg = new Image();
+pintoImg.src = 'https://images.tcdn.com.br/img/img_prod/1194878/pinto_feliz_883_1_2570caeb4cb7799079c7a77b54f194c8.jpg';
+
+// Obstáculos
+let cactus = {x: canvas.width, y: canvas.height - 50, width: 20, height: 50};
+
+// Função para desenhar o personagem (pinto feliz)
+function drawDino() {
+    ctx.drawImage(pintoImg, dinoX, dinoY - jumpHeight, dinoWidth, dinoHeight);
+}
+
+// Função para desenhar o cacto
+function drawCactus() {
+    ctx.fillStyle = 'red';
+    ctx.fillRect(cactus.x, cactus.y, cactus.width, cactus.height);
+}
+
+// Função para atualizar o jogo
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawDino();
+    drawCactus();
+
+    // Verifica a colisão com o cacto
+    if (cactus.x < dinoX + dinoWidth && cactus.x + cactus.width > dinoX &&
+        cactus.y < dinoY - jumpHeight + dinoHeight && cactus.y + cactus.height > dinoY - jumpHeight) {
+        alert("Game Over!");
+        resetGame();
+    }
+
+    // Atualiza o cacto
+    cactus.x -= 5;
+    if (cactus.x < 0) {
+        cactus.x = canvas.width;
+    }
+
+    // Lógica de pulo
+    if (isJumping) {
+        jumpHeight += jumpPower;
+        if (jumpHeight > 100) {
+            isJumping = false;
+        }
+    } else {
+        if (jumpHeight > 0) {
+            jumpHeight -= gravity;
+        }
+    }
+
+    // Chama a função de atualização a cada 20ms
+    requestAnimationFrame(update);
+}
+
+// Função para lidar com o pulo
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && !isJumping) {
+        isJumping = true;
+    }
+});
+
+// Função para reiniciar o jogo
+function resetGame() {
+    cactus.x = canvas.width;
+    dinoY = canvas.height - 60;
+    jumpHeight = 0;
+    isJumping = false;
+    update();
+}
+
+// Iniciar o jogo
+update();
+</script>
+
+</body>
+</html>
