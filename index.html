@@ -87,8 +87,8 @@ function update() {
         resetGame();
     }
 
-    // Atualiza o cacto
-    cactus.x -= 5;
+    // Atualiza o cacto (diminuímos a velocidade de 5 para 3)
+    cactus.x -= 3;
     if (cactus.x < 0) {
         cactus.x = canvas.width;
     }
@@ -105,8 +105,10 @@ function update() {
         }
     }
 
-    // Chama a função de atualização a cada 20ms
-    requestAnimationFrame(update);
+    // Chama a função de atualização a cada 30ms (antes estava chamando a cada 20ms)
+    setTimeout(() => {
+        requestAnimationFrame(update);
+    }, 30);
 }
 
 // Função para lidar com o pulo
