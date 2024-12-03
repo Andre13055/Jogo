@@ -105,18 +105,32 @@ function update() {
         }
     }
 
-    // Chama a função de atualização a cada 30ms (antes estava chamando a cada 20ms)
+    // Chama a função de atualização a cada 30ms
     setTimeout(() => {
         requestAnimationFrame(update);
     }, 30);
 }
 
-// Função para lidar com o pulo
+// Função para lidar com o pulo ao pressionar a tecla "Espaço"
 document.addEventListener('keydown', (event) => {
     if (event.code === 'Space' && !isJumping) {
         isJumping = true;
     }
 });
+
+// Função para lidar com o clique do mouse ou toque na tela
+function handleClickOrTouch() {
+    if (!isJumping) {
+        isJumping = true;
+    }
+}
+
+// Adicionando evento de clique para mouse e toque para dispositivos móveis
+canvas.addEventListener('click', handleClickOrTouch); // Clique com o mouse
+canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault(); // Impede o comportamento padrão do toque (como scroll)
+    handleClickOrTouch();  // Toque na tela
+}, false);
 
 // Função para reiniciar o jogo
 function resetGame() {
